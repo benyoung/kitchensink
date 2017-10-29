@@ -41,11 +41,14 @@ module metal_ring() {
             translate([0,0,metal_ring_h1])
             cylinder(r=metal_ring_r2,h=metal_ring_h2+eps);
             translate([0,0,metal_ring_h1+metal_ring_h2])
-            cylinder(r1=metal_ring_r2,r2=metal_ring_r3,h=metal_ring_h3);
+            cylinder(r1=metal_ring_r2,r2=metal_ring_r3,h=metal_ring_h3+eps);
         }
         union(){
-            translate([-cutout_x/2,-2*metal_ring_r2,-eps])
-            cube([cutout_x,4*metal_ring_r2,cutout_z+eps]);
+            for(rot=[0,180]){
+                rotate([0,0,rot])
+                translate([cutout_x/2,-2*metal_ring_r2,-eps])
+                cube([cutout_x,4*metal_ring_r2,cutout_z+eps]);
+            }
         }
     }
 }
@@ -71,18 +74,19 @@ module sink_hole() {
         }
         union(){
              translate([0,0,-sink_hole_depth-eps])
-             cylinder(r=sink_hole_radius, h=sink_hole_depth+2*eps);
+             cylinder(r=sink_hole_radius, h=sink_hole_depth+2*eps,$fn=16);
+             // make hole artificially chunky to cause ribs on gasket
         }
     }
 }
 //sink_hole();
 
 collar_sep = 26.9*mm;
-collar_z=2*mm;
+collar_z=5*mm; // really 2mm - artifically bigger
 collar_y=2*sink_hole_outer_radius; // made-up number
 collar_x=sink_hole_outer_radius;//made-up number
 notch_x = 2*mm;
-notch_y = 6*mm;
+notch_y = 7*mm;
 notch_placement=17.7*mm; // tweak until notch is at the side
 module sink_collar(){
     for(rot=[0,180])
@@ -102,6 +106,37 @@ module sink(){
     translate([0,0,-collar_z_offset])
     sink_collar();
 }
-sink();
+//sink();
+
+tap_z = -8*mm; // tweak until it looks spiffy
+module sink_assembly() {
+    sink();
+    translate([0,0,tap_z])
+    tap();
+}
+//sink_assembly();
+
+gasket_z = -13*mm;
+gasket_h = 21*mm;
+gasket_inner_hole_rad = cutout_x/2;
+lop=2*mm;
+cut_size=80*mm;
+module gasket(){
+    difference() {
+        union() {
+            translate([0,0,gasket_z])
+            cylinder(r=tap_outer_radius-eps,h=gasket_h-eps);
+        }
+        union() {
+            color("red")
+            cube([cut_size,lop,cut_size],center=true);
+            cylinder(r=gasket_inner_hole_rad,h=4*gasket_h, center=true);
+            sink_assembly();
+        }
+    }
+}
+gasket();
+
+
 
 
