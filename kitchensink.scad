@@ -58,4 +58,50 @@ module tap(){
     plastic_gasket();
     metal_ring();
 }
-tap();
+*tap();
+
+sink_hole_depth=20*mm; // made-up number
+sink_hole_radius=42.3*mm/2;
+sink_hole_outer_radius =tap_outer_radius; 
+module sink_hole() {
+    difference(){
+        union(){
+            translate([0,0,-sink_hole_depth])
+            cylinder(r=sink_hole_outer_radius, h=sink_hole_depth);
+        }
+        union(){
+             translate([0,0,-sink_hole_depth-eps])
+             cylinder(r=sink_hole_radius, h=sink_hole_depth+2*eps);
+        }
+    }
+}
+//sink_hole();
+
+collar_sep = 26.9*mm;
+collar_z=2*mm;
+collar_y=2*sink_hole_outer_radius; // made-up number
+collar_x=sink_hole_outer_radius;//made-up number
+notch_x = 2*mm;
+notch_y = 6*mm;
+notch_placement=17.7*mm; // tweak until notch is at the side
+module sink_collar(){
+    for(rot=[0,180])
+    rotate([0,0,rot])
+    translate([collar_sep/2,-collar_y/2,-collar_z])
+    cube([collar_x,collar_y,collar_z]);
+    
+    color("red")
+    translate([collar_sep/2-notch_x,-notch_placement,-collar_z])
+    cube([notch_x+eps,notch_y,collar_z]);
+}
+//sink_collar();
+
+collar_z_offset=9.8*mm;
+module sink(){
+    sink_hole();
+    translate([0,0,-collar_z_offset])
+    sink_collar();
+}
+sink();
+
+
