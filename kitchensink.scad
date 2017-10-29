@@ -1,5 +1,6 @@
 mm=1;
 eps = 0.01*mm;
+$fn=100;
 
 tap_outer_radius = 49.8*mm/2;
 tap_height=20*mm;
