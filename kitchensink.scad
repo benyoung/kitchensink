@@ -25,9 +25,10 @@ module plastic_gasket(){
 }
 *plastic_gasket(); 
 
-metal_ring_r1=34.8*mm/2; // bottom
-metal_ring_r2=40.1*mm/2; // middle
-metal_ring_r3=37.8*mm/2; //top
+slop = 0.15*mm;
+metal_ring_r1=34.8*mm/2+slop; // bottom
+metal_ring_r2=40.1*mm/2+slop; // middle
+metal_ring_r3=37.8*mm/2+slop; //top
 metal_ring_h1=2.8*mm; //bottom segment
 metal_ring_h2=6.5*mm; // middle segment
 metal_ring_h3=5.4*mm; //top segment
@@ -109,18 +110,18 @@ module sink(){
 }
 //sink();
 
-tap_z = -8*mm; // tweak until it looks spiffy
+tap_z = -15.5*mm; // tweak until it looks spiffy
 module sink_assembly() {
     sink();
     translate([0,0,tap_z])
     tap();
 }
-//sink_assembly();
+*sink_assembly();
 
-gasket_z = -13*mm;
-gasket_h = 21*mm;
+gasket_z = -10.5*mm;
+gasket_h = 9.7*mm;
 gasket_inner_hole_rad = cutout_x/2;
-lop=2*mm;
+lop=0.8*mm;
 cut_size=80*mm;
 module gasket(){
     difference() {
@@ -136,6 +137,7 @@ module gasket(){
         }
     }
 }
+rotate([180,0,0])
 gasket();
 
 
