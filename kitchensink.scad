@@ -1,4 +1,5 @@
 mm=1;
+in=25.4*mm;
 eps = 0.01*mm;
 $fn=100;
 
@@ -25,7 +26,7 @@ module plastic_gasket(){
 }
 *plastic_gasket(); 
 
-slop = 0.15*mm;
+slop = 0.10*mm;
 metal_ring_r1=34.8*mm/2+slop; // bottom
 metal_ring_r2=40.1*mm/2+slop; // middle
 metal_ring_r3=37.8*mm/2+slop; //top
@@ -76,7 +77,7 @@ module sink_hole() {
         }
         union(){
              translate([0,0,-sink_hole_depth-eps])
-             cylinder(r=sink_hole_radius, h=sink_hole_depth+2*eps,$fn=16);
+             cylinder(r=sink_hole_radius, h=sink_hole_depth+2*eps,$fn=48);
              // make hole artificially chunky to cause ribs on gasket
         }
     }
@@ -137,8 +138,12 @@ module gasket(){
         }
     }
 }
-rotate([180,0,0])
-gasket();
+
+intersection() {
+    rotate([180,0,0])
+    gasket();
+    cylinder(r=3*in,h=0.38*in);
+}
 
 
 
